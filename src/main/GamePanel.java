@@ -1,5 +1,7 @@
 package main;
 
+import entity.Player;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -8,7 +10,7 @@ public class GamePanel extends JPanel implements Runnable{
     final int originalTileSize = 16; //16x16 title
     final int scale = 3; // Factor de escala para aumentar el tamaño
 
-    final int tileSize= originalTileSize*scale; //48x48 tile
+    public final int tileSize= originalTileSize*scale; //48x48 tile
     final int maxScreenCol = 16;
     final int maxScreenRow = 12;
     final int screenWidth = tileSize*maxScreenCol; //768 px
@@ -20,6 +22,7 @@ public class GamePanel extends JPanel implements Runnable{
     // Hilo para el juego y controlador de teclas
     Thread gameThread;
     KeyHandler keYH = new KeyHandler();
+    Player player = new Player(this, keYH);
 
     // Posición inicial y velocidad del jugador
     int playerX = 100;
@@ -88,16 +91,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     // Actualiza la posición del jugador en función de las teclas presionadas
     public void update(){
-
-        if(keYH.upPressed){
-            playerY -= playerSpeed;
-        }else if(keYH.downPressed){
-            playerY += playerSpeed;
-        }else if(keYH.leftPressed){
-            playerX -= playerSpeed;
-        }else if(keYH.rightPressed){
-            playerX += playerSpeed;
-        }
+        player.update();
     }
 
     public void paintComponent(Graphics g){
@@ -106,11 +100,8 @@ public class GamePanel extends JPanel implements Runnable{
         //Convierte a Graphics2D
         Graphics2D g2d = (Graphics2D) g;
 
-        //Setea el color del pincel
-        g2d.setColor(Color.white);
 
-        //Dibuja un rectangulo
-        g2d.fillRect(playerX,playerY,tileSize,tileSize);
+        player.draw(g2d);
 
         //Liberar recursos
         g2d.dispose();
